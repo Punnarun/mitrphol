@@ -1,4 +1,4 @@
-export async function findNearbyPetrolStations(lon, lat) {
+export async function findNearbyPetrolStations(lon: number, lat: number) {
     // Check if latitude and longitude are provided
     if (!lat || !lon) {
         throw new Error("Latitude and longitude must be provided.");
@@ -18,7 +18,7 @@ export async function findNearbyPetrolStations(lon, lat) {
         const data = await response.json();
         const stations = data.elements;
 
-        return stations.map(station => ({
+        return stations.map((station: { tags: { name: any; }; lat: any; lon: any; }) => ({
             name: station.tags.name || "Unnamed station",
             lat: station.lat,
             lon: station.lon,
