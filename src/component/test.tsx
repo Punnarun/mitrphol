@@ -3,8 +3,19 @@ import { findNearbyPetrolStations } from "@/libs/gasStation";
 import { useState, useEffect } from "react";
 import '../app/globals.css';
 
-const Yoyo = ({ latitude, longitude }) => {
-  const [stations, setStations] = useState([]);
+interface YoyoProps {
+  latitude: number;
+  longitude: number;
+}
+
+interface PetrolStation {
+  name: string;
+  lat: number;
+  lon: number;
+}
+
+const Yoyo = ({ latitude, longitude }: YoyoProps) => {
+  const [stations, setStations] = useState<PetrolStation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -52,3 +63,5 @@ const Yoyo = ({ latitude, longitude }) => {
 };
 
 export default Yoyo;
+
+// hello
