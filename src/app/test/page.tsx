@@ -1,4 +1,4 @@
-import MapComponent from "@/component/MapComponent";
+import MapComponent from "@/component/MapComponent2";
 import Yoyo from "@/component/test";
 
 export default function Home() {

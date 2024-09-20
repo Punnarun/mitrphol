@@ -9,7 +9,12 @@ L.Icon.Default.prototype.options.iconRetinaUrl = 'https://unpkg.com/leaflet@1.7.
 L.Icon.Default.prototype.options.iconUrl = 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png';
 L.Icon.Default.prototype.options.shadowUrl = 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png';
 
-const MapComponent = ({ latitude, longitude }) => {
+interface MapComponentProps {
+  latitude: number;
+  longitude: number;
+}
+
+const MapComponent = ({ latitude, longitude }: MapComponentProps) => {
   const [isMounted, setIsMounted] = useState(false); // Track whether the component is mounted
 
   useEffect(() => {
@@ -20,7 +25,7 @@ const MapComponent = ({ latitude, longitude }) => {
     return null; // Return null during SSR
   }
 
-  const position = [latitude, longitude];
+  const position: [number, number] = [latitude, longitude];
 
   return (
     <MapContainer
