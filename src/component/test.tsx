@@ -28,7 +28,7 @@ const Yoyo = ({ latitude, longitude }: YoyoProps) => {
         );
         setStations(nearbyStations);
       } catch (err) {
-        setError(err.message);
+        // setError(err.message);
       } finally {
         setLoading(false);
       }

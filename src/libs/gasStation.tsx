@@ -24,7 +24,7 @@ export async function findNearbyPetrolStations(lon: number, lat: number) {
             lon: station.lon,
         }));
     } catch (error) {
-        console.error("Error:", error.message);
+        // console.error("Error:", error.message);
         return [];
     }
 }
