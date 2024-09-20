@@ -16,10 +16,18 @@ interface MapComponentProps {
 
 const MapComponent = ({ latitude, longitude }: MapComponentProps) => {
   const [isMounted, setIsMounted] = useState(false); // Track whether the component is mounted
-
+  const [isClient, setIsClient] = useState(false);
+  
   useEffect(() => {
     setIsMounted(true); // Set to true when the component is mounted
+    setIsClient(true); // Set to true when the component is mounted on the client
   }, []);
+
+  if (!isClient) {
+    return null; // Render nothing on the server
+  }
+
+
 
   if (!isMounted) {
     return null; // Return null during SSR
