@@ -1,6 +1,7 @@
 "use client";
 import { findNearbyPetrolStations } from "@/libs/gasStation";
 import { useState, useEffect } from "react";
+import '../app/globals.css';
 
 const Yoyo = ({ latitude, longitude }) => {
   const [stations, setStations] = useState([]);
@@ -32,20 +33,18 @@ const Yoyo = ({ latitude, longitude }) => {
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">Nearby Petrol Stations</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="flex flex-col gap-4">
         {stations.length > 0 ? (
           stations.map((station, index) => (
-            <div key={index} className="font-bold">
-              <h3 className="text-lg font-thin">{station.name}</h3>
-              <p className="text-gray-600">
+            <div key={index} className="bg-blue-100 p-4 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold">{station.name}</h3>
+              <p className="text-gray-700">
                 Location: {station.lat}, {station.lon}
               </p>
             </div>
           ))
         ) : (
-          <p className="text-gray-500">
-            No petrol stations found within 100 meters.
-          </p>
+          <p className="text-gray-500">No petrol stations found within 100 meters.</p>
         )}
       </div>
     </div>

@@ -5,7 +5,7 @@ export async function findNearbyPetrolStations(lon, lat) {
     }
 
     // Overpass API URL to find petrol stations within 100 meters
-    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node["amenity"="fuel"](around:1000,${lon},${lat});out;`;
+    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node["amenity"="fuel"](around:2000,${lon},${lat});out;`;
 
     try {
 

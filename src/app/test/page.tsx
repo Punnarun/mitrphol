@@ -7,6 +7,7 @@ export default function Home() {
 
   return (
     <div>
+      <MapComponent latitude={latitude} longitude={longitude} />
       <Yoyo latitude={latitude} longitude={longitude} />
     </div>
     )
