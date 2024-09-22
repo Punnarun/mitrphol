@@ -42,7 +42,7 @@ const MapComponent = ({ latitude, longitude }: MapComponentProps) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <Circle center={position} radius={100} pathOptions={{ color: "red" }} />
+        <Circle center={position} radius={300} pathOptions={{ color: "red" }} />
         <Marker position={position}>
           <Popup>
             Latitude: {latitude}, Longitude: {longitude}
