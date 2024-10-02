@@ -167,7 +167,7 @@ const FuelCostCalculator: React.FC = () => {
               className="px-2 py-1"
             />
           </div>
-          <Button type="submit" className="w-full bg-black text-white px-2 py-1">
+          <Button type="submit" className="w-full bg-black text-white px-2 py-1 rounded-md">
             Calculate
           </Button>
         </form>
