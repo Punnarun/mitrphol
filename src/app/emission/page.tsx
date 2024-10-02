@@ -146,10 +146,10 @@ const FuelCostCalculator: React.FC = () => {
                 <SelectValue placeholder="Select a truck brand" />
               </SelectTrigger>
               <SelectContent className="bg-white">
-                <SelectGroup>
-                  <SelectLabel>Truck Brand</SelectLabel>
+                <SelectGroup className='p-2'>
+                  <SelectLabel className='px-2 py-1.5'>Truck Brand</SelectLabel>
                   {truckData.map((truck) => (
-                    <SelectItem key={truck.brand} value={truck.brand}>
+                    <SelectItem key={truck.brand} value={truck.brand} className='px-4 py-2'>
                       {truck.brand}
                     </SelectItem>
                   ))}
@@ -167,7 +167,7 @@ const FuelCostCalculator: React.FC = () => {
               className="px-2 py-1"
             />
           </div>
-          <Button type="submit" className="w-full bg-black text-white">
+          <Button type="submit" className="w-full bg-black text-white px-2 py-1">
             Calculate
           </Button>
         </form>
