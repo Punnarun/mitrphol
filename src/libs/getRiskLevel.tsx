@@ -17,7 +17,7 @@ export async function getRiskLevel(params: RiskLevelParams) {
     const { start_lat, start_lng, end_lat, end_lng, productType, truckType, rains, precipitation, visibility, distance, duration } = params;
 
     // Overpass API URL to find petrol stations within 100 meters
-    const overpassUrl = `http://172.18.20.253:8888/predict_risk`;
+    const overpassUrl = `http://172.18.19.232:8888/predict_risk`;
 
     try {
         const response = await fetch(overpassUrl, {
@@ -25,7 +25,19 @@ export async function getRiskLevel(params: RiskLevelParams) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ start_lat, start_lng, end_lat, end_lng, productType, truckType, rains, precipitation, visibility, distance, duration }),
+            body: JSON.stringify({
+                "start_lat": start_lat,
+                "start_lng": start_lng,
+                "end_lat": end_lat,
+                "end_lng": end_lng,
+                "productType": productType,
+                "truckType": truckType,
+                "rains": rains,
+                "precipitation": precipitation,
+                "visibility": visibility,
+                "distance": distance,
+                "duration": duration,
+            }),
         });
 
         if (!response.ok) {
@@ -33,15 +45,11 @@ export async function getRiskLevel(params: RiskLevelParams) {
         }
 
         const data = await response.json();
-        const stations = data.elements;
 
-        return stations.map((station: { tags: { name: any; }; lat: any; lon: any; }) => ({
-            name: station.tags.name || "Unnamed station",
-            lat: station.lat,
-            lon: station.lon,
-        }));
+        return data.risk_level;
+
     } catch (error) {
-        // console.error("Error:", error.message);
+        console.error("Error:", (error as Error).message);
         return [];
     }
 }
