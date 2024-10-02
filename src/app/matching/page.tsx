@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
 import dayjs from "dayjs"; // For date/time manipulation
@@ -21,9 +21,9 @@ const Matching = () => {
 
   // Fetch and parse CSV data
   async function fetchCSV() {
-    const response = await fetch('/processed_results_with_original.csv');
+    const response = await fetch("/processed_results_with_original.csv");
     const reader = response.body.getReader();
-    const decoder = new TextDecoder('utf-8');
+    const decoder = new TextDecoder("utf-8");
     let result = await reader.read();
     let csv = decoder.decode(result.value);
 
@@ -50,7 +50,9 @@ const Matching = () => {
     const rLat1 = toRadians(lat1);
     const rLat2 = toRadians(lat2);
 
-    const a = Math.sin(dLat / 2) ** 2 + Math.sin(dLon / 2) ** 2 * Math.cos(rLat1) * Math.cos(rLat2);
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.sin(dLon / 2) ** 2 * Math.cos(rLat1) * Math.cos(rLat2);
     const rad = 6371; // Radius of the Earth in kilometers
     const c = 2 * Math.asin(Math.sqrt(a));
 
@@ -70,21 +72,28 @@ const Matching = () => {
           // Ensure both times are valid dayjs objects
           if (csvTime.isValid() && customerTime.isValid()) {
             // Check if time is within ±10 minutes
-            if (csvTime.isBetween(customerTime.subtract(10, "minute"), customerTime.add(10, "minute"))) {
+            if (
+              csvTime.isBetween(
+                customerTime.subtract(10, "minute"),
+                customerTime.add(10, "minute")
+              )
+            ) {
               // Calculate the distance between customer's start and CSV's end points
               const distance = calculateDistance(
                 customer.start_lat,
                 customer.start_lng,
                 csvRow.end_lat, // End latitude from CSV
-                csvRow.end_lng  // End longitude from CSV
+                csvRow.end_lng // End longitude from CSV
               );
 
               // Check if the distance is less than or equal to 10 km and not already in matches
               if (distance <= 10) {
                 const existingMatch = tempMatches.find(
-                  (match) => match.customer.pickup_time === customer.pickup_time && match.distance === distance.toFixed(3)
+                  (match) =>
+                    match.customer.pickup_time === customer.pickup_time &&
+                    match.distance === distance.toFixed(3)
                 );
-                
+
                 if (!existingMatch) {
                   tempMatches.push({
                     customer: customer,
@@ -105,23 +114,32 @@ const Matching = () => {
   }, [data, csvData]);
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
+    <div className="h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       {matches.length > 0 ? (
-        <div>
-          <h2>Matching Deliveries:</h2>
-          <ul>
+        <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-lg">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Matching Deliveries:
+          </h2>
+          <ul className="space-y-4">
             {matches.map((match, index) => (
-              <li key={index} className="mb-4">
-                <strong>Customer Pickup:</strong> {match.customer.pickup_time} - <strong>CSV Pickup:</strong> {match.csvRow.pickup_time} <br />
-                <strong>Distance:</strong> {match.distance} km
+              <li key={index} className="border-b border-gray-200 pb-2">
+                <p className="text-gray-700">
+                  <strong>Customer Pickup:</strong> {match.customer.pickup_time}
+                </p>
+                <p className="text-gray-700">
+                  <strong>CSV Pickup:</strong> {match.csvRow.pickup_time}
+                </p>
+                <p className="text-gray-600">
+                  <strong>Distance:</strong> {match.distance} km
+                </p>
               </li>
             ))}
           </ul>
         </div>
       ) : (
-        <p>No matches found or still loading...</p>
+        <p className="text-gray-600">No matches found or still loading...</p>
       )}
-    </div>   
+    </div>
   );
 };
 
