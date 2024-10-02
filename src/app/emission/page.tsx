@@ -215,9 +215,9 @@ const handleInsurance = async () => {
         });
         //console.log(riskLevel);
         let insuranceCost = '';
-        if (riskLevel < 0.3) {
+        if (riskLevel <= 0.3) {
             insuranceCost = 'Low';
-        } else if (riskLevel >= 0.3 && riskLevel < 0.7) {
+        } else if (riskLevel > 0.3 && riskLevel < 0.7) {
             insuranceCost = 'Mid';
         } else {
             insuranceCost = 'High';
@@ -249,6 +249,7 @@ const handleInsurance = async () => {
               placeholder="Enter start latitude"
               min={-90}
               max={90}
+              step="0.00001"
             />
           </div>
           <div className="space-y-2">
@@ -262,6 +263,7 @@ const handleInsurance = async () => {
               placeholder="Enter start longitude"
               min={-180}
               max={180}
+              step="0.00001"
             />
           </div>
           <div className="space-y-2">
@@ -275,6 +277,7 @@ const handleInsurance = async () => {
               placeholder="Enter end latitude"
               min={-90}
               max={90}
+              step="0.00001"
             />
           </div>
           <div className="space-y-2">
@@ -288,6 +291,7 @@ const handleInsurance = async () => {
               placeholder="Enter end longitude"
               min={-180}
               max={180}
+              step="0.00001"
             />
           </div>
           <div className="space-y-2">
