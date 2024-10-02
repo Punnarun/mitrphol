@@ -150,7 +150,7 @@ const FuelCostCalculator: React.FC = () => {
 
   const getOSRMDistance = async (startLat: number, startLng: number, endLat: number, endLng: number) => {
     try {
-      const url = `http://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${endLng},${endLat}?overview=false`;
+      const url = `https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${endLng},${endLat}?overview=false`;
       const response = await axios.get(url);
       if (response.status === 200) {
         const data = response.data;
