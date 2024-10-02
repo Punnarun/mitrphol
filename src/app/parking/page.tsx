@@ -59,25 +59,67 @@ export default function TestPage() {
 
           {/* Buttons to fetch different types of places */}
           <div className="button-group m-10">
-          <input 
-            type='button' 
-            value='Petrol Station' 
-            // onClick={() => handleFetchPlaces('petrol_station')} 
-            className="rounded-button"
-          />
-          <input 
-            type='button' 
-            value='Fabric Factory' 
-            // onClick={() => handleFetchPlaces('fabric_factory')} 
-            className="rounded-button"
-          />
-          <input 
-            type='button' 
-            value='Metal Factory' 
-            // onClick={() => handleFetchPlaces('metal_factory')} 
-            className="rounded-button"
-          />
-        </div>
+            <input
+              type="button"
+              value="Petrol Station"
+              // onClick={() => handleFetchPlaces('petrol_station')}
+              className="rounded-button"
+            />
+            <input
+              type="button"
+              value="Fabric Factory"
+              // onClick={() => handleFetchPlaces('fabric_factory')}
+              className="rounded-button"
+            />
+            <input
+              type="button"
+              value="Metal Factory"
+              // onClick={() => handleFetchPlaces('metal_factory')}
+              className="rounded-button"
+            />
+            <input
+              type="button"
+              value="Metal Factory"
+              // onClick={() => handleFetchPlaces('metal_factory')}
+              className="rounded-button"
+            />
+            <input
+              type="button"
+              value="Metal Factory"
+              // onClick={() => handleFetchPlaces('metal_factory')}
+              className="rounded-button"
+            />
+            <input
+              type="button"
+              value="Metal Factory"
+              // onClick={() => handleFetchPlaces('metal_factory')}
+              className="rounded-button"
+            />
+            <input
+              type="button"
+              value="Metal Factory"
+              // onClick={() => handleFetchPlaces('metal_factory')}
+              className="rounded-button"
+            />
+            <input
+              type="button"
+              value="Metal Factory"
+              // onClick={() => handleFetchPlaces('metal_factory')}
+              className="rounded-button"
+            />
+            <input
+              type="button"
+              value="Metal Factory"
+              // onClick={() => handleFetchPlaces('metal_factory')}
+              className="rounded-button"
+            />
+            <input
+              type="button"
+              value="Metal Factory"
+              // onClick={() => handleFetchPlaces('metal_factory')}
+              className="rounded-button"
+            />
+          </div>
 
           {/* Pass the coordinates array to Yoyo */}
           <Yoyo coordinates={coordinates} />

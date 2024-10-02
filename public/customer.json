@@ -1,0 +1,47 @@
+[
+  {
+    "producType": "Food",
+    "TruckType": "10Wheels",
+    "start_lat": 13.823155,
+    "start_lng": 99.888629,
+    "end_lat": 16.487862,
+    "end_lng": 102.428327,
+    "pickup_time": "2021-09-02 14:29:00"
+  },
+  {
+    "producType": "Chemical",
+    "TruckType": "10Wheels",
+    "start_lat": 16.547352,
+    "start_lng": 102.095508,
+    "end_lat": 13.750882,
+    "end_lng": 100.409278,
+    "pickup_time": "2021-09-04 15:02:33"
+  },
+  {
+    "producType": "Other",
+    "TruckType": "10Wheels",
+    "start_lat": 14.861583,
+    "start_lng": 100.359041,
+    "end_lat": 13.879873,
+    "end_lng": 100.36858,
+    "pickup_time": "2/9/2021 14:34:58"
+  },
+  {
+    "producType": "Other",
+    "TruckType": "Flatbed",
+    "start_lat": 16.487862,
+    "start_lng": 102.428327,
+    "end_lat": 17.47471,
+    "end_lng": 103.452606,
+    "pickup_time": "3/9/2021 10:39:58"
+  },
+  {
+    "producType": "Other",
+    "TruckType": "4Wheels",
+    "start_lat": 16.487862,
+    "start_lng": 102.428327,
+    "end_lat": 13.605661,
+    "end_lng": 100.56817,
+    "pickup_time": "11/9/2021  2:12:58"
+  }
+]

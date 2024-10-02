@@ -38,7 +38,7 @@ const Maintenance = () => {
         label: "Total Distance",
         data: data.map((item) => parseFloat(item.distance)), // Assuming 'distance' column exists
         backgroundColor: data.map((item) =>
-          parseFloat(item.distance) > 30000 ? "red" : "green"
+          parseFloat(item.distance) > 50000 ? "red" : "green"
         ),
       },
     ],
