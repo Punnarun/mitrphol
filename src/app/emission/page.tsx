@@ -13,6 +13,7 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+import { getRiskLevel } from '@/libs/getRiskLevel';
 
 interface TruckFuelConsumption {
     [key: string]: {
@@ -21,98 +22,118 @@ interface TruckFuelConsumption {
     };
   }
   
-  const fuelConsumption: TruckFuelConsumption = {
+const fuelConsumption: TruckFuelConsumption = {
     "4ล้อ-คอก": {
-      min: 0.08,
-      max: 0.10,
+        min: 0.08,
+        max: 0.10,
     },
     "4ล้อ-จัมโบ้": {
-      min: 0.08,
-      max: 0.13,
+        min: 0.08,
+        max: 0.13,
     },
     "4ล้อ-ตู้ทึบ": {
-      min: 0.08,
-      max: 0.11,
+        min: 0.08,
+        max: 0.11,
     },
     "6ล้อ-เฮี๊ยบ": {
-      min: 0.17,
-      max: 0.25,
+        min: 0.17,
+        max: 0.25,
     },
     "6ล้อ-พื้นเรียบ": {
-      min: 0.14,
-      max: 0.20,
+        min: 0.14,
+        max: 0.20,
     },
     "6ล้อ-ตู้ทึบ": {
-      min: 0.14,
-      max: 0.20,
+        min: 0.14,
+        max: 0.20,
     },
     "6ล้อ-คอก": {
-      min: 0.14,
-      max: 0.20,
+        min: 0.14,
+        max: 0.20,
     },
     "10ล้อ-พ่วงเฮี๊ยบ": {
-      min: 0.20,
-      max: 0.33,
+        min: 0.20,
+        max: 0.33,
     },
     "10ล้อ-คอก(15 ตัน)": {
-      min: 0.25,
-      max: 0.33,
+        min: 0.25,
+        max: 0.33,
     },
     "10ล้อ-รถเฮี๊ยบ": {
-      min: 0.20,
-      max: 0.33,
+        min: 0.20,
+        max: 0.33,
     },
     "10ล้อ-ตู้ทึบ-พ่วง": {
-      min: 0.25,
-      max: 0.33,
+        min: 0.25,
+        max: 0.33,
     },
     "10ล้อ-ตู้ทึบ": {
-      min: 0.17,
-      max: 0.25,
+        min: 0.17,
+        max: 0.25,
     },
     "10ล้อ-คอก(16 ตัน)": {
-      min: 0.25,
-      max: 0.33,
+        min: 0.25,
+        max: 0.33,
     },
     "10ล้อ-คอก-พ่วง": {
-      min: 0.20,
-      max: 0.33,
+        min: 0.20,
+        max: 0.33,
     },
     "10ล้อ-พื้นเรียบ": {
-      min: 0.17,
-      max: 0.25,
+        min: 0.17,
+        max: 0.25,
     },
     "รถหัวลาก-พื้นเรียบ(30 ตัน)": {
-      min: 0.25,
-      max: 0.50,
+        min: 0.25,
+        max: 0.50,
     },
     "รถหัวลาก-พื้นเรียบ(32 ตัน)": {
-      min: 0.25,
-      max: 0.50,
+        min: 0.25,
+        max: 0.50,
     },
-  };
-  
+};
+
+const TruckKey: { [key: string]: number } = {
+    "4ล้อ-คอก": 0,
+    "4ล้อ-จัมโบ้": 1,
+    "4ล้อ-ตู้ทึบ": 2,
+    "6ล้อ-เฮี๊ยบ": 3,
+    "6ล้อ-พื้นเรียบ": 4,
+    "6ล้อ-ตู้ทึบ": 5,
+    "6ล้อ-คอก": 6,
+    "10ล้อ-พ่วงเฮี๊ยบ": 7,
+    "10ล้อ-คอก(15 ตัน)": 8,
+    "10ล้อ-รถเฮี๊ยบ": 9,
+    "10ล้อ-ตู้ทึบ-พ่วง": 10,
+    "10ล้อ-ตู้ทึบ": 11,
+    "10ล้อ-คอก(16 ตัน)": 12,
+    "10ล้อ-คอก-พ่วง": 13,
+    "10ล้อ-พื้นเรียบ": 14,
+    "รถหัวลาก-พื้นเรียบ(30 ตัน)": 15,
+    "รถหัวลาก-พื้นเรียบ(32 ตัน)": 16,
+};
 
 interface ProductType {
-  productType: string;
-}
+    key: number;
+    productType: string;
+  }
 
 const productTypeData: ProductType[] = [
-    { productType: 'สินค้าอุปโภคบริโภค' },
-    { productType: 'น้ำตาลกระสอบ' },
-    { productType: 'น้ำตาลเทกอง' },
-    { productType: 'ปุ๋ยกระสอบ' },
-    { productType: 'อุปกรณ์การเกษตร' },
-    { productType: 'ผลผลิตทางการเกษตร (ข้าว แป้ง มันสำปะหลัง ยางพารา)' },
-    { productType: 'อาหารสัตว์' },
-    { productType: 'วัสดุก่อสร้าง' },
-    { productType: 'วัสดุทดแทนไม้ (MDF & PB)' },
-    { productType: 'ชิ้นส่วนยานยนต์' },
-    { productType: 'สินค้าอันตราย' },
-    { productType: 'กากน้ำตาล (Molasses)' },
-    { productType: 'อื่นๆ' },
-    { productType: 'เชื้อเพลิงชีวมวล (Biomasses)' },
-    { productType: 'สารเคมี' },
+    { key: 0, productType: 'สินค้าอุปโภคบริโภค' },
+    { key: 1, productType: 'น้ำตาลกระสอบ' },
+    { key: 2, productType: 'น้ำตาลเทกอง' },
+    { key: 3, productType: 'ปุ๋ยกระสอบ' },
+    { key: 4, productType: 'อุปกรณ์การเกษตร' },
+    { key: 5, productType: 'ผลผลิตทางการเกษตร (ข้าว แป้ง มันสำปะหลัง ยางพารา)' },
+    { key: 6, productType: 'อาหารสัตว์' },
+    { key: 7, productType: 'วัสดุก่อสร้าง' },
+    { key: 8, productType: 'วัสดุทดแทนไม้ (MDF & PB)' },
+    { key: 9, productType: 'ชิ้นส่วนยานยนต์' },
+    { key: 10, productType: 'สินค้าอันตราย' },
+    { key: 11, productType: 'กากน้ำตาล (Molasses)' },
+    { key: 12, productType: 'อื่นๆ' },
+    { key: 13, productType: 'เชื้อเพลิงชีวมวล (Biomasses)' },
+    { key: 14, productType: 'สารเคมี' },
 ];
 
 const FuelCostCalculator: React.FC = () => {
@@ -120,8 +141,8 @@ const FuelCostCalculator: React.FC = () => {
   const [startLng, setStartLng] = useState<number | null>(null);
   const [endLat, setEndLat] = useState<number | null>(null);
   const [endLng, setEndLng] = useState<number | null>(null);
-  const [truckBrand, setTruckBrand] = useState<string>('');
   const [productType, setProductType] = useState<string>('');
+  const [productTypeKey, setProductTypeKey] = useState<number>(0);
   const [truckType, setTruckType] = useState<string>('');
   const [oilPrice, setOilPrice] = useState<number | null>(null);
   const [result, setResult] = useState<any | null>(null);
@@ -146,7 +167,6 @@ const FuelCostCalculator: React.FC = () => {
 
   const getFuelConsumptionPerKm = (truckType: string) => {
       const truck = fuelConsumption[truckType];
-      console.log(truck);
       return [truck.min, truck.max, truck.min + truck.max / 2];
   };
 
@@ -163,7 +183,7 @@ const FuelCostCalculator: React.FC = () => {
   const handleSubmit = async () => {
     if (startLat && startLng && endLat && endLng && truckType && oilPrice) {
       const osrmResult = await getOSRMDistance(startLat, startLng, endLat, endLng);
-      console.log(osrmResult);
+      //console.log(osrmResult);
       if (osrmResult) {
         const { distance, duration } = osrmResult;
         const fuelConsumption = getFuelConsumptionPerKm(truckType);
@@ -171,10 +191,39 @@ const FuelCostCalculator: React.FC = () => {
           const { minFuelUsed, maxFuelUsed, minTotalCost, maxTotalCost, carbonEmission } = calculateFuelCost(distance, fuelConsumption, oilPrice);
           setResult({ distance, duration, minFuelUsed, maxFuelUsed, minTotalCost, maxTotalCost, carbonEmission });
         }
-        // http://172.18.19.232:8888/predict_risk 
       }
     }
   };
+
+const handleInsurance = async () => {
+    await handleSubmit();
+    if (isInsuranceChecked && result) {
+        //console.log(result);
+        const riskLevel = await getRiskLevel({
+          start_lat: Number(startLat),
+          start_lng: Number(startLng),
+          end_lat: Number(endLat),
+          end_lng: Number(endLng),
+          productType: productTypeKey,
+          truckType: TruckKey[truckType],
+          rains: 0,
+          precipitation: 0,
+          visibility: 0,
+          distance: result.distance,
+          duration: result.duration,
+        });
+        //console.log(riskLevel);
+        let insuranceCost = '';
+        if (riskLevel < 0.3) {
+            insuranceCost = 'Low';
+        } else if (riskLevel >= 0.3 && riskLevel < 0.7) {
+            insuranceCost = 'Mid';
+        } else {
+            insuranceCost = 'High';
+        }
+        setResult({ ...result, insuranceCost });
+    }
+};
 
   return (
     <div className="flex w-full h-full justify-center items-center m-2 flex-wrap">
@@ -184,9 +233,7 @@ const FuelCostCalculator: React.FC = () => {
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
-            console.log(
-              isInsuranceChecked ? "Insurance is checked" : "Insurance is not checked"
-            );
+            handleInsurance();
           }}
         >
           <h3 className="text-xl font-semibold">Calculator</h3>
@@ -391,7 +438,13 @@ const FuelCostCalculator: React.FC = () => {
                 </h3>
                 <div className="space-y-2">
                   <Label>Product Type</Label>
-                  <Select value={productType} onValueChange={setProductType}>
+                  <Select value={productType} onValueChange={(value) => {
+                    setProductType(value);
+                    const selectedProduct = productTypeData.find(product => product.productType === value);
+                    if (selectedProduct) {
+                      setProductTypeKey(selectedProduct.key);
+                    }
+                  }}>
                     <SelectTrigger className="w-full px-2 py-1">
                       <SelectValue placeholder="Select a product type" />
                     </SelectTrigger>
@@ -402,7 +455,7 @@ const FuelCostCalculator: React.FC = () => {
                         </SelectLabel>
                         {productTypeData.map((product) => (
                           <SelectItem
-                            key={product.productType}
+                            key={product.key}
                             value={product.productType}
                             className="px-4 py-2 hover:bg-gray-100"
                           >
@@ -469,13 +522,14 @@ const FuelCostCalculator: React.FC = () => {
             </span>{" "}
             kg CO2
           </p>
+          { isInsuranceChecked && result.insuranceCost && (
           <p className="text-zinc-500">
-            Expected Insurance Cost{" "}
+            Risk Rating{" "}
             <span className="text-xl text-black">
-              {result.insuranceCost.toFixed(1)}
-            </span>{" "}
-            baht
+              {result.insuranceCost}
+            </span>
           </p>
+          )}
         </div>
       )}
     </div>
