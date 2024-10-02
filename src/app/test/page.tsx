@@ -21,7 +21,7 @@ export default function TestPage() {
   // Fetch the CSV file and parse it using PapaParse
   useEffect(() => {
     const fetchCSV = async () => {
-      const response = await fetch("/taxi_clusters_more_than_5.csv");  // Fetch from public folder
+      const response = await fetch("/trucks_clusters.csv");  // Fetch from public folder
       if (!response.body) {
         throw new Error("Response body is null");
       }

@@ -48,7 +48,7 @@ const MapComponent = ({ data }: MapComponentProps) => {
     : [13.750598, 100.531536]; // Bangkok coordinates as default
 
   return (
-    <div>
+    <div className="m-10">
       <MapContainer
         center={defaultCenter}
         zoom={11}
