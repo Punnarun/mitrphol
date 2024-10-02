@@ -14,22 +14,105 @@ import {
     SelectValue,
   } from "@/components/ui/select"
 
-interface TruckBrand {
-  brand: string;
-  fuel_consumption_per_km: number; // Liters per km
+interface TruckFuelConsumption {
+    [key: string]: {
+      min: number;
+      max: number;
+    };
+  }
+  
+  const fuelConsumption: TruckFuelConsumption = {
+    "4ล้อ-คอก": {
+      min: 0.08,
+      max: 0.10,
+    },
+    "4ล้อ-จัมโบ้": {
+      min: 0.08,
+      max: 0.13,
+    },
+    "4ล้อ-ตู้ทึบ": {
+      min: 0.08,
+      max: 0.11,
+    },
+    "6ล้อ-เฮี๊ยบ": {
+      min: 0.17,
+      max: 0.25,
+    },
+    "6ล้อ-พื้นเรียบ": {
+      min: 0.14,
+      max: 0.20,
+    },
+    "6ล้อ-ตู้ทึบ": {
+      min: 0.14,
+      max: 0.20,
+    },
+    "6ล้อ-คอก": {
+      min: 0.14,
+      max: 0.20,
+    },
+    "10ล้อ-พ่วงเฮี๊ยบ": {
+      min: 0.20,
+      max: 0.33,
+    },
+    "10ล้อ-คอก(15 ตัน)": {
+      min: 0.25,
+      max: 0.33,
+    },
+    "10ล้อ-รถเฮี๊ยบ": {
+      min: 0.20,
+      max: 0.33,
+    },
+    "10ล้อ-ตู้ทึบ-พ่วง": {
+      min: 0.25,
+      max: 0.33,
+    },
+    "10ล้อ-ตู้ทึบ": {
+      min: 0.17,
+      max: 0.25,
+    },
+    "10ล้อ-คอก(16 ตัน)": {
+      min: 0.25,
+      max: 0.33,
+    },
+    "10ล้อ-คอก-พ่วง": {
+      min: 0.20,
+      max: 0.33,
+    },
+    "10ล้อ-พื้นเรียบ": {
+      min: 0.17,
+      max: 0.25,
+    },
+    "รถหัวลาก-พื้นเรียบ(30 ตัน)": {
+      min: 0.25,
+      max: 0.50,
+    },
+    "รถหัวลาก-พื้นเรียบ(32 ตัน)": {
+      min: 0.25,
+      max: 0.50,
+    },
+  };
+  
+
+interface ProductType {
+  productType: string;
 }
 
-const truckData: TruckBrand[] = [
-  { brand: 'Volvo Trucks', fuel_consumption_per_km: 0.4 },
-  { brand: 'Freightliner', fuel_consumption_per_km: 0.45 },
-  { brand: 'Scania', fuel_consumption_per_km: 0.42 },
-  { brand: 'Mercedes-Benz', fuel_consumption_per_km: 0.38 },
-  { brand: 'Kenworth', fuel_consumption_per_km: 0.43 },
-  { brand: 'Peterbilt', fuel_consumption_per_km: 0.44 },
-  { brand: 'Mack Trucks', fuel_consumption_per_km: 0.48 },
-  { brand: 'MAN Trucks', fuel_consumption_per_km: 0.41 },
-  { brand: 'DAF Trucks', fuel_consumption_per_km: 0.39 },
-  { brand: 'Isuzu Trucks', fuel_consumption_per_km: 0.35 }
+const productTypeData: ProductType[] = [
+    { productType: 'สินค้าอุปโภคบริโภค' },
+    { productType: 'น้ำตาลกระสอบ' },
+    { productType: 'น้ำตาลเทกอง' },
+    { productType: 'ปุ๋ยกระสอบ' },
+    { productType: 'อุปกรณ์การเกษตร' },
+    { productType: 'ผลผลิตทางการเกษตร (ข้าว แป้ง มันสำปะหลัง ยางพารา)' },
+    { productType: 'อาหารสัตว์' },
+    { productType: 'วัสดุก่อสร้าง' },
+    { productType: 'วัสดุทดแทนไม้ (MDF & PB)' },
+    { productType: 'ชิ้นส่วนยานยนต์' },
+    { productType: 'สินค้าอันตราย' },
+    { productType: 'กากน้ำตาล (Molasses)' },
+    { productType: 'อื่นๆ' },
+    { productType: 'เชื้อเพลิงชีวมวล (Biomasses)' },
+    { productType: 'สารเคมี' },
 ];
 
 const FuelCostCalculator: React.FC = () => {
@@ -38,8 +121,11 @@ const FuelCostCalculator: React.FC = () => {
   const [endLat, setEndLat] = useState<number | null>(null);
   const [endLng, setEndLng] = useState<number | null>(null);
   const [truckBrand, setTruckBrand] = useState<string>('');
+  const [productType, setProductType] = useState<string>('');
+  const [truckType, setTruckType] = useState<string>('');
   const [oilPrice, setOilPrice] = useState<number | null>(null);
   const [result, setResult] = useState<any | null>(null);
+  const [isInsuranceChecked, setIsInsuranceChecked] = useState(false);
 
   const getOSRMDistance = async (startLat: number, startLng: number, endLat: number, endLng: number) => {
     try {
@@ -58,29 +144,34 @@ const FuelCostCalculator: React.FC = () => {
     }
   };
 
-  const getFuelConsumptionPerKm = (brand: string) => {
-    const truck = truckData.find((t) => t.brand.toLowerCase() === brand.toLowerCase());
-    return truck ? truck.fuel_consumption_per_km : null;
+  const getFuelConsumptionPerKm = (truckType: string) => {
+      const truck = fuelConsumption[truckType];
+      console.log(truck);
+      return [truck.min, truck.max, truck.min + truck.max / 2];
   };
 
-  const calculateFuelCost = (distance: number, fuelConsumption: number, oilPrice: number) => {
-    const fuelUsed = distance * fuelConsumption;
-    const totalCost = fuelUsed * oilPrice;
-    const carbonEmission = fuelUsed * 2.68; // CO2 emission in kg
-    return { fuelUsed, totalCost, carbonEmission };
+  const calculateFuelCost = (distance: number, fuelConsumption: number[], oilPrice: number) => {
+    const minFuelUsed = distance * fuelConsumption[0];
+    const maxFuelUsed = distance * fuelConsumption[1];
+    const avgFuelUsed = distance * fuelConsumption[2];
+    const minTotalCost = minFuelUsed * oilPrice;
+    const maxTotalCost = maxFuelUsed * oilPrice;
+    const carbonEmission = avgFuelUsed * 2.68; // CO2 emission in kg
+    return { minFuelUsed, maxFuelUsed, minTotalCost, maxTotalCost, carbonEmission };
   };
 
   const handleSubmit = async () => {
-    if (startLat && startLng && endLat && endLng && truckBrand && oilPrice) {
+    if (startLat && startLng && endLat && endLng && truckType && oilPrice) {
       const osrmResult = await getOSRMDistance(startLat, startLng, endLat, endLng);
       console.log(osrmResult);
       if (osrmResult) {
         const { distance, duration } = osrmResult;
-        const fuelConsumption = getFuelConsumptionPerKm(truckBrand);
+        const fuelConsumption = getFuelConsumptionPerKm(truckType);
         if (distance && duration && fuelConsumption !== null) {
-          const { fuelUsed, totalCost, carbonEmission } = calculateFuelCost(distance, fuelConsumption, oilPrice);
-          setResult({ distance, duration, fuelUsed, totalCost, carbonEmission });
+          const { minFuelUsed, maxFuelUsed, minTotalCost, maxTotalCost, carbonEmission } = calculateFuelCost(distance, fuelConsumption, oilPrice);
+          setResult({ distance, duration, minFuelUsed, maxFuelUsed, minTotalCost, maxTotalCost, carbonEmission });
         }
+        // http://172.18.19.232:8888/predict_risk 
       }
     }
   };
@@ -93,8 +184,12 @@ const FuelCostCalculator: React.FC = () => {
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
+            console.log(
+              isInsuranceChecked ? "Insurance is checked" : "Insurance is not checked"
+            );
           }}
         >
+          <h3 className="text-xl font-semibold">Calculator</h3>
           <div className="space-y-2">
             <Label htmlFor="startLatitude">Start Latitude</Label>
             <Input
@@ -104,6 +199,8 @@ const FuelCostCalculator: React.FC = () => {
               value={startLat || ""}
               onChange={(e) => setStartLat(parseFloat(e.target.value))}
               placeholder="Enter start latitude"
+              min={-90}
+              max={90}
             />
           </div>
           <div className="space-y-2">
@@ -115,6 +212,8 @@ const FuelCostCalculator: React.FC = () => {
               value={startLng || ""}
               onChange={(e) => setStartLng(parseFloat(e.target.value))}
               placeholder="Enter start longitude"
+              min={-180}
+              max={180}
             />
           </div>
           <div className="space-y-2">
@@ -126,6 +225,8 @@ const FuelCostCalculator: React.FC = () => {
               value={endLat || ""}
               onChange={(e) => setEndLat(parseFloat(e.target.value))}
               placeholder="Enter end latitude"
+              min={-90}
+              max={90}
             />
           </div>
           <div className="space-y-2">
@@ -137,22 +238,127 @@ const FuelCostCalculator: React.FC = () => {
               value={endLng || ""}
               onChange={(e) => setEndLng(parseFloat(e.target.value))}
               placeholder="Enter end longitude"
+              min={-180}
+              max={180}
             />
           </div>
           <div className="space-y-2">
-            <Label>Truck Brand</Label>
-            <Select value={truckBrand} onValueChange={setTruckBrand}>
+            <Label>Truck Type</Label>
+            <Select value={truckType} onValueChange={setTruckType}>
               <SelectTrigger className="w-full px-2 py-1">
-                <SelectValue placeholder="Select a truck brand" />
+                <SelectValue placeholder="Select a truck type" />
               </SelectTrigger>
-              <SelectContent className="bg-white">
-                <SelectGroup className='p-2'>
-                  <SelectLabel className='px-2 py-1.5'>Truck Brand</SelectLabel>
-                  {truckData.map((truck) => (
-                    <SelectItem key={truck.brand} value={truck.brand} className='px-4 py-2'>
-                      {truck.brand}
-                    </SelectItem>
-                  ))}
+              <SelectContent className="bg-white max-h-[300px] overflow-y-auto">
+                <SelectGroup className="p-2">
+                  <SelectLabel className="px-2 py-1.5">
+                    ประเภทรถขนส่ง
+                  </SelectLabel>
+                  <SelectLabel className="px-3 py-1.5">4 ล้อ</SelectLabel>
+                  <SelectItem
+                    value="4ล้อ-คอก"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    4ล้อ-คอก
+                  </SelectItem>
+                  <SelectItem
+                    value="4ล้อ-จัมโบ้"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    4ล้อ-จัมโบ้
+                  </SelectItem>
+                  <SelectItem
+                    value="4ล้อ-ตู้ทึบ"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    4ล้อ-ตู้ทึบ
+                  </SelectItem>
+                  <SelectLabel className="px-3 py-1.5">6 ล้อ</SelectLabel>
+                  <SelectItem
+                    value="6ล้อ-เฮี๊ยบ"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    6ล้อ-เฮี๊ยบ
+                  </SelectItem>
+                  <SelectItem
+                    value="6ล้อ-พื้นเรียบ"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    6ล้อ-พื้นเรียบ
+                  </SelectItem>
+                  <SelectItem
+                    value="6ล้อ-ตู้ทึบ"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    6ล้อ-ตู้ทึบ
+                  </SelectItem>
+                  <SelectItem
+                    value="6ล้อ-คอก"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    6ล้อ-คอก
+                  </SelectItem>
+                  <SelectLabel className="px-3 py-1.5">10 ล้อ</SelectLabel>
+                  <SelectItem
+                    value="10ล้อ-พ่วงเฮี๊ยบ"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    10ล้อ-พ่วงเฮี๊ยบ
+                  </SelectItem>
+                  <SelectItem
+                    value="10ล้อ-คอก(15 ตัน)"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    10ล้อ-คอก(15 ตัน)
+                  </SelectItem>
+                  <SelectItem
+                    value="10ล้อ-รถเฮี๊ยบ"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    10ล้อ-รถเฮี๊ยบ
+                  </SelectItem>
+                  <SelectItem
+                    value="10ล้อ-ตู้ทึบ-พ่วง"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    10ล้อ-ตู้ทึบ-พ่วง
+                  </SelectItem>
+                  <SelectItem
+                    value="10ล้อ-ตู้ทึบ"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    10ล้อ-ตู้ทึบ
+                  </SelectItem>
+                  <SelectItem
+                    value="10ล้อ-คอก(16 ตัน)"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    10ล้อ-คอก(16 ตัน)
+                  </SelectItem>
+                  <SelectItem
+                    value="10ล้อ-คอก-พ่วง"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    10ล้อ-คอก-พ่วง
+                  </SelectItem>
+                  <SelectItem
+                    value="10ล้อ-พื้นเรียบ"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    10ล้อ-พื้นเรียบ
+                  </SelectItem>
+                  <SelectLabel className="px-3 py-1.5">อื่นๆ</SelectLabel>
+                  <SelectItem
+                    value="รถหัวลาก-พื้นเรียบ(30 ตัน)"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    รถหัวลาก-พื้นเรียบ(30 ตัน)
+                  </SelectItem>
+                  <SelectItem
+                    value="รถหัวลาก-พื้นเรียบ(32 ตัน)"
+                    className="px-4 py-2 hover:bg-gray-100"
+                  >
+                    รถหัวลาก-พื้นเรียบ(32 ตัน)
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -165,9 +371,55 @@ const FuelCostCalculator: React.FC = () => {
               onChange={(e) => setOilPrice(parseFloat(e.target.value))}
               placeholder="Enter oil price"
               className="px-2 py-1"
+              min={0}
             />
           </div>
-          <Button type="submit" className="w-full bg-black text-white px-2 py-1 rounded-md">
+          <div className="space-y-2">
+            <label className="inline-flex items-center space-x-2">
+              <input
+                type="checkbox"
+                className="form-checkbox h-4 w-4 rounded"
+                checked={isInsuranceChecked}
+                onChange={(e) => setIsInsuranceChecked(e.target.checked)}
+              />
+              <span className="text-gray-700">Insurance?</span>
+            </label>
+            {isInsuranceChecked && (
+              <div className="mt-4 p-4 space-y-2 rounded">
+                <h3 className="text-lg font-semibold text-sky-600">
+                  Additional Information
+                </h3>
+                <div className="space-y-2">
+                  <Label>Product Type</Label>
+                  <Select value={productType} onValueChange={setProductType}>
+                    <SelectTrigger className="w-full px-2 py-1">
+                      <SelectValue placeholder="Select a product type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white max-h-[300px] overflow-y-auto">
+                      <SelectGroup className="p-2">
+                        <SelectLabel className="px-2 py-1.5">
+                          ประเภท
+                        </SelectLabel>
+                        {productTypeData.map((product) => (
+                          <SelectItem
+                            key={product.productType}
+                            value={product.productType}
+                            className="px-4 py-2 hover:bg-gray-100"
+                          >
+                            {product.productType}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+          </div>
+          <Button
+            type="submit"
+            className="w-full bg-black text-white px-2 py-1 rounded-md"
+          >
             Calculate
           </Button>
         </form>
@@ -175,21 +427,54 @@ const FuelCostCalculator: React.FC = () => {
 
       {result && (
         <div className="w-full h-full space-y-6 max-w-lg mx-auto my-4 p-6 bg-white rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold">Results:</h3>
+          <h3 className="text-xl font-semibold">Results</h3>
           <p className="text-zinc-500">
-            Distance: <span className="text-xl text-black">{result.distance.toFixed(1)}</span> km
+            Distance{" "}
+            <span className="text-xl text-black">
+              {result.distance.toFixed(1)}
+            </span>{" "}
+            km
           </p>
           <p className="text-zinc-500">
-            Duration: <span className="text-xl text-black">{result.duration.toFixed(1)}</span> hours
+            Duration{" "}
+            <span className="text-xl text-black">
+              {result.duration.toFixed(1)}
+            </span>{" "}
+            hours
           </p>
           <p className="text-zinc-500">
-            Fuel Used: <span className="text-xl text-black">{result.fuelUsed.toFixed(1)}</span> liters
+            Fuel Used{" ~ "}
+            <span className="text-xl text-black">
+              {result.minFuelUsed.toFixed(1)}
+            </span>{" - "}
+            <span className="text-xl text-black">
+              {result.maxFuelUsed.toFixed(1)}
+            </span>{" "}
+            liters
           </p>
           <p className="text-zinc-500">
-            Total Fuel Cost: <span className="text-xl text-black">{result.totalCost.toFixed(1)}</span> baht
+            Total Fuel Cost{" ~ "}
+            <span className="text-xl text-black">
+              {result.minTotalCost.toFixed(1)}
+            </span>{" - "}
+            <span className="text-xl text-black">
+              {result.maxTotalCost.toFixed(1)}
+            </span>{" "}
+            baht
           </p>
           <p className="text-zinc-500">
-            Carbon Emission: <span className="text-xl text-black">{result.carbonEmission.toFixed(1)}</span> kg CO2
+            Carbon Emission{" ~ "}
+            <span className="text-xl text-black">
+              {result.carbonEmission.toFixed(1)}
+            </span>{" "}
+            kg CO2
+          </p>
+          <p className="text-zinc-500">
+            Expected Insurance Cost{" "}
+            <span className="text-xl text-black">
+              {result.insuranceCost.toFixed(1)}
+            </span>{" "}
+            baht
           </p>
         </div>
       )}
