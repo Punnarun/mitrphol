@@ -8,12 +8,20 @@ import Papa from "papaparse";
 Chart.register(CategoryScale, LinearScale, BarElement);
 
 const Maintenance = () => {
-  const [data, setData] = useState([]);
+  interface DataItem {
+    id: string;
+    distance: string;
+  }
+  
+  const [data, setData] = useState<DataItem[]>([]);
 
   // Fetch and parse CSV data
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch("/distance_sum.csv"); // Adjust the path as needed
+      if (!response.body) {
+        throw new Error("Response body is null");
+      }
       const reader = response.body.getReader();
       const result = await reader.read();
       const decoder = new TextDecoder("utf-8");
@@ -22,7 +30,7 @@ const Maintenance = () => {
       Papa.parse(csvContent, {
         header: true,
         complete: (result) => {
-          setData(result.data);
+          setData(result.data as DataItem[]);
         },
       });
     };
@@ -65,3 +73,5 @@ const Maintenance = () => {
 };
 
 export default Maintenance;
+
+// ddepdepdep
