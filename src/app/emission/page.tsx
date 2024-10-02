@@ -14,6 +14,7 @@ import {
     SelectValue,
   } from "@/components/ui/select"
 import { getRiskLevel } from '@/libs/getRiskLevel';
+import { Badge } from '@/components/ui/badge';
 
 interface TruckFuelConsumption {
     [key: string]: {
@@ -525,9 +526,19 @@ const handleInsurance = async () => {
           { isInsuranceChecked && result.insuranceCost && (
           <p className="text-zinc-500">
             Risk Rating{" "}
-            <span className="text-xl text-black">
-              {result.insuranceCost}
-            </span>
+            {result.insuranceCost === 'Low' ? (
+              <Badge className="px-4 bg-green-500 text-white">
+                {result.insuranceCost}
+              </Badge>
+            ) : result.insuranceCost === 'Mid' ? (
+              <Badge className="px-4 bg-yellow-500 text-white">
+                {result.insuranceCost}
+              </Badge>
+            ) : (
+              <Badge className="px-4 bg-red-500 text-white">
+                {result.insuranceCost}
+              </Badge>
+            )}
           </p>
           )}
         </div>
