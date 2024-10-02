@@ -7,9 +7,9 @@ import isBetween from "dayjs/plugin/isBetween"; // Import the isBetween plugin
 dayjs.extend(isBetween); // Extend dayjs with the isBetween plugin
 
 const Matching = () => {
-  const [data, setData] = useState(null);
-  const [csvData, setCsvData] = useState(null);
-  const [matches, setMatches] = useState([]);
+  const [data, setData] = useState<any[]>([]);
+  const [csvData, setCsvData] = useState<any[]>([]);
+  const [matches, setMatches] = useState<{ customer: any; csvRow: any; distance: string; }[]>([]);
 
   // Fetch customer.json
   useEffect(() => {
@@ -22,6 +22,9 @@ const Matching = () => {
   // Fetch and parse CSV data
   async function fetchCSV() {
     const response = await fetch("/processed_results_with_original.csv");
+    if (!response.body) {
+      throw new Error("Response body is null");
+    }
     const reader = response.body.getReader();
     const decoder = new TextDecoder("utf-8");
     let result = await reader.read();
@@ -32,7 +35,7 @@ const Matching = () => {
       complete: (results) => {
         setCsvData(results.data);
       },
-      error: (error) => console.error("Error parsing CSV:", error),
+      error: (error: any) => console.error("Error parsing CSV:", error),
     });
   }
 
@@ -41,8 +44,8 @@ const Matching = () => {
   }, []);
 
   // Calculate the Haversine distance in kilometers
-  function calculateDistance(lat1, lon1, lat2, lon2) {
-    const toRadians = (degree) => degree * (Math.PI / 180);
+  function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+    const toRadians = (degree: number) => degree * (Math.PI / 180);
 
     const dLat = toRadians(lat2 - lat1);
     const dLon = toRadians(lon2 - lon1);
@@ -62,7 +65,7 @@ const Matching = () => {
   // Check for matching data based on ±10 minutes and within 500 meters
   useEffect(() => {
     if (data && csvData) {
-      const tempMatches = [];
+      const tempMatches: ((prevState: never[]) => never[]) | { customer: any; csvRow: any; distance: string; }[] = [];
 
       data.forEach((customer) => {
         csvData.forEach((csvRow) => {
