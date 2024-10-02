@@ -12,7 +12,7 @@ const Navbar = () => {
           </li>
           <li>
             <a href="/emission" className="hover:text-black">
-              CO₂ Emission
+              Calculator
             </a>
           </li>
           <li>
