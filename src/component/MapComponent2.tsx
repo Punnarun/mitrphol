@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Circle, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 // Fix Leaflet's default icon issue with Next.js
 L.Icon.Default.prototype.options.iconRetinaUrl =
@@ -49,6 +51,28 @@ const MapComponent = ({ data }: MapComponentProps) => {
 
   return (
     <div className="m-10">
+      <div className="button-group flex flex-wrap my-2">
+        <input
+          type="button"
+          value="⛽️  Petrol Station"
+          className="rounded-button"
+        />
+        <input
+          type="button"
+          value="🧶  Fabric Factory"
+          className="rounded-button"
+        />
+        <input
+          type="button"
+          value="⚓️  Metal Factory"
+          className="rounded-button"
+        />
+        <input
+          type="button"
+          value="🍴  Restaurant"
+          className="rounded-button"
+        />
+      </div>
       <MapContainer
         center={defaultCenter}
         zoom={11}
@@ -70,7 +94,7 @@ const MapComponent = ({ data }: MapComponentProps) => {
               <Circle
                 key={index}
                 center={[lat, lng]}
-                radius={1000}  // 150 meters radius
+                radius={1000} // 150 meters radius
                 pathOptions={{ color: "blue" }}
               >
                 <Popup>

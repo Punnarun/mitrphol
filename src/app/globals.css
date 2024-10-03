@@ -9,17 +9,21 @@
   
   .rounded-button {
     background-color: #FFFFFF; /* Button background color */
-    border: 2px solid #000; /* Sets the border color and thickness (black border) */
-    border-radius: 15px; /* Adjust for desired roundness */
-    padding: 10px 15px; /* Adds padding for better button size */
+    border: 2px solid #dadada; /* Sets the border color and thickness (black border) */
+    border-radius: 9999px; /* Adjust for desired roundness */
+    padding: 5px 15px; /* Adds padding for better button size */
     color: #000; /* Button text color */
-    font-weight: bold; /* Makes the button text bold */
     cursor: pointer; /* Changes cursor to pointer on hover */
     transition: background-color 0.3s, border-color 0.3s; /* Smooth transition for hover effect */
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   }
   
   .rounded-button:hover {
-    background-color: #e0a800; /* Darker shade on hover for visual feedback */
+    background-color: #f0f0f0; /* Darker shade on hover for visual feedback */
+  }
+
+  .roundlg {
+    border-radius: 0.5rem;
   }
   
   layer base {

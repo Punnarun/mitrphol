@@ -2,6 +2,7 @@
 import { findNearbyPetrolStations } from "@/libs/gasStation";
 import { useState, useEffect } from "react";
 import '../app/globals.css';
+import Image from "next/image";
 
 interface YoyoProps {
   coordinates: { latitude: number; longitude: number }[]; // Expecting an array of coordinates
@@ -41,7 +42,7 @@ const Yoyo = ({ coordinates }: YoyoProps) => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center mb-10">
         <img
           src="/truck.gif"  // Replace with your actual GIF path
           alt="Loading GIF"
@@ -73,24 +74,34 @@ const Yoyo = ({ coordinates }: YoyoProps) => {
     }));
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4 text-black">Nearby Petrol Stations</h2>
-      <div className="flex flex-wrap justify-between bg-white p-4 rounded-lg shadow-md mb-4 border border-black">
+    <div className="m-4">
+      <h2 className="text-2xl font-bold m-4 text-black">Nearby Petrol Stations</h2>
+      <div className="flex flex-wrap m-4 gap-4">
         {topStations.length > 0 ? (
           topStations.map((station, index) => (
-            <div key={index} className="flex-1 text-center p-2 border border-gray-300 m-2 rounded-lg bg-[#fdbd1f] text-black">
-              <h3 className="font-semibold">{station.name}</h3>
-              <p className="text-gray-700">Count: {station.count}</p>
+            <div key={index} className="flex text-center justify-between items-center w-64 px-4 py-2 border border-gray-300 roundlg text-black">
+              <div className="flex gap-2 justify-center items-center">
+                {station.name[0].toLowerCase() === "u" ? <Image src="/gas-station.png" alt="Gas Station Logo" width={30} height={40}/> : null}
+                {station.name[0].toLowerCase() === "p" ? <Image src="/ptt.png" alt="PTT Logo" width={30} height={40}/> : null}
+                {station.name[0].toLowerCase() === "ป" ? <Image src="/ptt.png" alt="PTT Logo" width={30} height={40}/> : null}
+                {station.name[0].toLowerCase() === "c" ? <Image src="/caltex.jpeg" alt="Caltex Logo" width={30} height={30}/> : null}
+                {station.name[0].toLowerCase() === "e" ? <Image src="/esso.png" alt="Esso Logo" width={40} height={30}/> : null}
+                {station.name[0].toLowerCase() === "ส" ? <Image src="/siamgas.png" alt="Siam Gas Logo" width={36} height={40}/> : null}
+                <h3 className="font-semibold">{station.name}</h3>
+              </div>
+              <div className="flex justify-center items-center w-10 h-10 bg-neutral-700 rounded-full">
+                <p className="text-white">{station.count}</p>
+              </div>
             </div>
           ))
         ) : (
           <p>No petrol stations available.</p>
         )}
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col flex-wrap gap-1">
         {stations.length > 0 ? (
           stations.map((station, index) => (
-            <div key={index} className="bg-[#fdbd1f] p-4 rounded-lg shadow-md">
+            <div key={index} className="bg-white p-4 shadow-md">
               <h3 className="text-lg font-semibold text-black">{station.name}</h3>
               <p className="text-gray-700">
                 Location: {station.lat}, {station.lon}
