@@ -11,17 +11,17 @@ const Navbar = () => {
             </a>
           </li>
           <li>
-            <a href="/emission" className="hover:text-black">
-              CO₂ Emission
-            </a>
-          </li>
-          <li>
             <a href="/matching" className="hover:text-black">
               Matching
             </a>
           </li>
           <li>
-            <a href="/mtn" className="hover:text-black">
+            <a href="/insurance" className="hover:text-black">
+              Insurance
+            </a>
+          </li>
+          <li>
+            <a href="/maintenance" className="hover:text-black">
               Maintanance
             </a>
           </li>
