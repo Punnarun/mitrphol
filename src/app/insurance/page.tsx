@@ -16,84 +16,6 @@ import {
 import { getRiskLevel } from '@/libs/getRiskLevel';
 import { Badge } from '@/components/ui/badge';
 
-interface TruckFuelConsumption {
-    [key: string]: {
-      min: number;
-      max: number;
-    };
-  }
-  
-const fuelConsumption: TruckFuelConsumption = {
-    "4ล้อ-คอก": {
-        min: 0.08,
-        max: 0.10,
-    },
-    "4ล้อ-จัมโบ้": {
-        min: 0.08,
-        max: 0.13,
-    },
-    "4ล้อ-ตู้ทึบ": {
-        min: 0.08,
-        max: 0.11,
-    },
-    "6ล้อ-เฮี๊ยบ": {
-        min: 0.17,
-        max: 0.25,
-    },
-    "6ล้อ-พื้นเรียบ": {
-        min: 0.14,
-        max: 0.20,
-    },
-    "6ล้อ-ตู้ทึบ": {
-        min: 0.14,
-        max: 0.20,
-    },
-    "6ล้อ-คอก": {
-        min: 0.14,
-        max: 0.20,
-    },
-    "10ล้อ-พ่วงเฮี๊ยบ": {
-        min: 0.20,
-        max: 0.33,
-    },
-    "10ล้อ-คอก(15 ตัน)": {
-        min: 0.25,
-        max: 0.33,
-    },
-    "10ล้อ-รถเฮี๊ยบ": {
-        min: 0.20,
-        max: 0.33,
-    },
-    "10ล้อ-ตู้ทึบ-พ่วง": {
-        min: 0.25,
-        max: 0.33,
-    },
-    "10ล้อ-ตู้ทึบ": {
-        min: 0.17,
-        max: 0.25,
-    },
-    "10ล้อ-คอก(16 ตัน)": {
-        min: 0.25,
-        max: 0.33,
-    },
-    "10ล้อ-คอก-พ่วง": {
-        min: 0.20,
-        max: 0.33,
-    },
-    "10ล้อ-พื้นเรียบ": {
-        min: 0.17,
-        max: 0.25,
-    },
-    "รถหัวลาก-พื้นเรียบ(30 ตัน)": {
-        min: 0.25,
-        max: 0.50,
-    },
-    "รถหัวลาก-พื้นเรียบ(32 ตัน)": {
-        min: 0.25,
-        max: 0.50,
-    },
-};
-
 const TruckKey: { [key: string]: number } = {
     "4ล้อ-คอก": 0,
     "4ล้อ-จัมโบ้": 1,
@@ -145,9 +67,8 @@ const FuelCostCalculator: React.FC = () => {
   const [productType, setProductType] = useState<string>('');
   const [productTypeKey, setProductTypeKey] = useState<number>(0);
   const [truckType, setTruckType] = useState<string>('');
-  const [oilPrice, setOilPrice] = useState<number | null>(null);
+  const [riskRating, setRiskRating] = useState<string>('');
   const [result, setResult] = useState<any | null>(null);
-  const [isInsuranceChecked, setIsInsuranceChecked] = useState(false);
 
   const getOSRMDistance = async (startLat: number, startLng: number, endLat: number, endLng: number) => {
     try {
@@ -166,40 +87,11 @@ const FuelCostCalculator: React.FC = () => {
     }
   };
 
-  const getFuelConsumptionPerKm = (truckType: string) => {
-      const truck = fuelConsumption[truckType];
-      return [truck.min, truck.max, truck.min + truck.max / 2];
-  };
-
-  const calculateFuelCost = (distance: number, fuelConsumption: number[], oilPrice: number) => {
-    const minFuelUsed = distance * fuelConsumption[0];
-    const maxFuelUsed = distance * fuelConsumption[1];
-    const avgFuelUsed = distance * fuelConsumption[2];
-    const minTotalCost = minFuelUsed * oilPrice;
-    const maxTotalCost = maxFuelUsed * oilPrice;
-    const carbonEmission = avgFuelUsed * 2.68; // CO2 emission in kg
-    return { minFuelUsed, maxFuelUsed, minTotalCost, maxTotalCost, carbonEmission };
-  };
-
   const handleSubmit = async () => {
-    if (startLat && startLng && endLat && endLng && truckType && oilPrice) {
+    if (startLat && startLng && endLat && endLng) {
       const osrmResult = await getOSRMDistance(startLat, startLng, endLat, endLng);
-      //console.log(osrmResult);
       if (osrmResult) {
         const { distance, duration } = osrmResult;
-        const fuelConsumption = getFuelConsumptionPerKm(truckType);
-        if (distance && duration && fuelConsumption !== null) {
-          const { minFuelUsed, maxFuelUsed, minTotalCost, maxTotalCost, carbonEmission } = calculateFuelCost(distance, fuelConsumption, oilPrice);
-          setResult({ distance, duration, minFuelUsed, maxFuelUsed, minTotalCost, maxTotalCost, carbonEmission });
-        }
-      }
-    }
-  };
-
-const handleInsurance = async () => {
-    await handleSubmit();
-    if (isInsuranceChecked && result) {
-        //console.log(result);
         const riskLevel = await getRiskLevel({
           start_lat: Number(startLat),
           start_lng: Number(startLng),
@@ -210,21 +102,20 @@ const handleInsurance = async () => {
           rains: 0,
           precipitation: 0,
           visibility: 0,
-          distance: result.distance,
-          duration: result.duration,
+          distance: distance,
+          duration: duration,
         });
-        //console.log(riskLevel);
-        let insuranceCost = '';
         if (riskLevel <= 0.3) {
-            insuranceCost = 'Low';
+          setRiskRating('Low');
         } else if (riskLevel > 0.3 && riskLevel < 0.7) {
-            insuranceCost = 'Mid';
+          setRiskRating('Mid');
         } else {
-            insuranceCost = 'High';
+          setRiskRating('High');
         }
-        setResult({ ...result, insuranceCost });
+        setResult({ distance, duration });
+      }
     }
-};
+  };
 
   return (
     <div className="flex w-full h-full justify-center items-center m-2 flex-wrap">
@@ -234,10 +125,9 @@ const handleInsurance = async () => {
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
-            handleInsurance();
           }}
         >
-          <h3 className="text-xl font-semibold">Calculator</h3>
+          <h3 className="text-xl font-semibold">Insurance</h3>
           <div className="space-y-2">
             <Label htmlFor="startLatitude">Start Latitude</Label>
             <Input
@@ -416,135 +306,72 @@ const handleInsurance = async () => {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Oil Price per Liter (บาท/ลิตร)</Label>
-            <Input
-              type="number"
-              value={oilPrice || ""}
-              onChange={(e) => setOilPrice(parseFloat(e.target.value))}
-              placeholder="Enter oil price"
-              className="px-2 py-1"
-              min={0}
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="inline-flex items-center space-x-2">
-              <input
-                type="checkbox"
-                className="form-checkbox h-4 w-4 rounded"
-                checked={isInsuranceChecked}
-                onChange={(e) => setIsInsuranceChecked(e.target.checked)}
-              />
-              <span className="text-gray-700">Insurance?</span>
-            </label>
-            {isInsuranceChecked && (
-              <div className="mt-4 p-4 space-y-2 rounded">
-                <h3 className="text-lg font-semibold text-sky-600">
-                  Additional Information
-                </h3>
-                <div className="space-y-2">
-                  <Label>Product Type</Label>
-                  <Select value={productType} onValueChange={(value) => {
-                    setProductType(value);
-                    const selectedProduct = productTypeData.find(product => product.productType === value);
-                    if (selectedProduct) {
-                      setProductTypeKey(selectedProduct.key);
-                    }
-                  }}>
-                    <SelectTrigger className="w-full px-2 py-1">
-                      <SelectValue placeholder="Select a product type" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white max-h-[300px] overflow-y-auto">
-                      <SelectGroup className="p-2">
-                        <SelectLabel className="px-2 py-1.5">
-                          ประเภท
-                        </SelectLabel>
-                        {productTypeData.map((product) => (
-                          <SelectItem
-                            key={product.key}
-                            value={product.productType}
-                            className="px-4 py-2 hover:bg-gray-100"
-                          >
-                            {product.productType}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            )}
+            <Label>Product Type</Label>
+            <Select
+              value={productType}
+              onValueChange={(value) => {
+                setProductType(value);
+                const selectedProduct = productTypeData.find(
+                  (product) => product.productType === value
+                );
+                if (selectedProduct) {
+                  setProductTypeKey(selectedProduct.key);
+                }
+              }}
+            >
+              <SelectTrigger className="w-full px-2 py-1">
+                <SelectValue placeholder="Select a product type" />
+              </SelectTrigger>
+              <SelectContent className="bg-white max-h-[300px] overflow-y-auto">
+                <SelectGroup className="p-2">
+                  <SelectLabel className="px-2 py-1.5">ประเภท</SelectLabel>
+                  {productTypeData.map((product) => (
+                    <SelectItem
+                      key={product.key}
+                      value={product.productType}
+                      className="px-4 py-2 hover:bg-gray-100"
+                    >
+                      {product.productType}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
           <Button
             type="submit"
             className="w-full bg-black text-white px-2 py-1 rounded-md"
           >
-            Calculate
+            Submit
           </Button>
         </form>
       </div>
 
       {result && (
         <div className="w-full h-full space-y-6 max-w-lg mx-auto my-4 p-6 bg-white rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold">Results</h3>
-          <p className="text-zinc-500">
-            Distance{" "}
-            <span className="text-xl text-black">
-              {result.distance.toFixed(1)}
-            </span>{" "}
-            km
-          </p>
-          <p className="text-zinc-500">
-            Duration{" "}
-            <span className="text-xl text-black">
-              {result.duration.toFixed(1)}
-            </span>{" "}
-            hours
-          </p>
-          <p className="text-zinc-500">
-            Fuel Used{" ~ "}
-            <span className="text-xl text-black">
-              {result.minFuelUsed.toFixed(1)}
-            </span>{" - "}
-            <span className="text-xl text-black">
-              {result.maxFuelUsed.toFixed(1)}
-            </span>{" "}
-            liters
-          </p>
-          <p className="text-zinc-500">
-            Total Fuel Cost{" ~ "}
-            <span className="text-xl text-black">
-              {result.minTotalCost.toFixed(1)}
-            </span>{" - "}
-            <span className="text-xl text-black">
-              {result.maxTotalCost.toFixed(1)}
-            </span>{" "}
-            baht
-          </p>
-          <p className="text-zinc-500">
-            Carbon Emission{" ~ "}
-            <span className="text-xl text-black">
-              {result.carbonEmission.toFixed(1)}
-            </span>{" "}
-            kg CO2
-          </p>
-          { isInsuranceChecked && result.insuranceCost && (
-          <p className="text-zinc-500">
+          <div className="text-zinc-500">
             Risk Rating{" "}
-            {result.insuranceCost === 'Low' ? (
+            {riskRating === "Low" ? (
               <Badge className="px-4 bg-green-500 text-white">
-                {result.insuranceCost}
+                {riskRating}
               </Badge>
-            ) : result.insuranceCost === 'Mid' ? (
+            ) : riskRating === "Mid" ? (
               <Badge className="px-4 bg-yellow-500 text-white">
-                {result.insuranceCost}
+                {riskRating}
               </Badge>
             ) : (
-              <Badge className="px-4 bg-red-500 text-white">
-                {result.insuranceCost}
-              </Badge>
+              <Badge className="px-4 bg-red-500 text-white">{riskRating}</Badge>
             )}
-          </p>
-          )}
+          </div>
+          <div className="text-zinc-500">
+            {riskRating === "Low" ? (
+              <div>"Weather looking good, good to go!"</div>
+            ) : riskRating === "Mid" ? (
+              <div>"Weather looking normal, your load might be at risk, you could get an insurance"</div>
+            ) : (
+              <div>"The weather condition is not looking good, you should consider get an insurance."</div>
+            )}
+          </div>
         </div>
       )}
     </div>
