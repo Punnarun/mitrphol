@@ -79,11 +79,11 @@ export default function TestPage() {
             />
             <input
               type="button"
-              value="Metal Factory"
+              value="Restaurant"
               // onClick={() => handleFetchPlaces('metal_factory')}
               className="rounded-button"
             />
-            <input
+            {/* <input
               type="button"
               value="Metal Factory"
               // onClick={() => handleFetchPlaces('metal_factory')}
@@ -118,7 +118,7 @@ export default function TestPage() {
               value="Metal Factory"
               // onClick={() => handleFetchPlaces('metal_factory')}
               className="rounded-button"
-            />
+            /> */}
           </div>
 
           {/* Pass the coordinates array to Yoyo */}

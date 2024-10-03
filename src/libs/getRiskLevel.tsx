@@ -17,7 +17,7 @@ export async function getRiskLevel(params: RiskLevelParams) {
     const { start_lat, start_lng, end_lat, end_lng, productType, truckType, rains, precipitation, visibility, distance, duration } = params;
 
     // Overpass API URL to find petrol stations within 100 meters
-    const overpassUrl = `http://172.18.19.232:8888/predict_risk`;
+    const overpassUrl = `http://26.113.169.4:8888/predict_risk`;
 
     try {
         const response = await fetch(overpassUrl, {

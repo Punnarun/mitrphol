@@ -77,7 +77,7 @@ const MapComponent = ({ data }: MapComponentProps) => {
                   <div>
                     <strong>Rank: {point.Rank}</strong>
                     <br />
-                    Count Taxis: {point.Count_Taxi}
+                    Count Trucks: {point.Count_Taxi}
                     <br />
                     Latitude: {lat}, Longitude: {lng}
                   </div>

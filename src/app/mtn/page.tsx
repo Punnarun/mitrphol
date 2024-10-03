@@ -1,10 +1,9 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart, CategoryScale, LinearScale, BarElement } from "chart.js";
 import Papa from "papaparse";
 
-// Register the necessary components
 Chart.register(CategoryScale, LinearScale, BarElement);
 
 const Maintenance = () => {
@@ -12,39 +11,32 @@ const Maintenance = () => {
     id: string;
     distance: string;
   }
-  
+
   const [data, setData] = useState<DataItem[]>([]);
 
-  // Fetch and parse CSV data
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/distance_sum.csv"); // Adjust the path as needed
-      if (!response.body) {
-        throw new Error("Response body is null");
-      }
+      const response = await fetch("/distance_sum.csv");
+      if (!response.body) throw new Error("Response body is null");
       const reader = response.body.getReader();
       const result = await reader.read();
-      const decoder = new TextDecoder("utf-8");
-      const csvContent = decoder.decode(result.value);
+      const csvContent = new TextDecoder("utf-8").decode(result.value);
 
       Papa.parse(csvContent, {
         header: true,
-        complete: (result) => {
-          setData(result.data as DataItem[]);
-        },
+        complete: (result) => setData(result.data as DataItem[]),
       });
     };
 
     fetchData();
   }, []);
 
-  // Prepare data for the bar chart
   const chartData = {
-    labels: data.map((item) => item.id), // Assuming 'id' column exists in the CSV
+    labels: data.map((item) => item.id),
     datasets: [
       {
-        label: "Total Distance",
-        data: data.map((item) => parseFloat(item.distance)), // Assuming 'distance' column exists
+        label: "Total Distance (> 50k)",
+        data: data.map((item) => parseFloat(item.distance)),
         backgroundColor: data.map((item) =>
           parseFloat(item.distance) > 50000 ? "red" : "green"
         ),
@@ -52,19 +44,42 @@ const Maintenance = () => {
     ],
   };
 
-  const options = {
-    scales: {
-      y: {
-        beginAtZero: true,
+  let sum = 0;
+
+  const chartData2 = {
+    labels: data.map((item) => item.id),
+    datasets: [
+      {
+        label: "Total Distance (> 10k)",
+        data: data.map((item) => sum += parseFloat(item.distance)),
+        backgroundColor: data.map((item) =>
+          parseFloat(item.distance) > 10000 ? "red" : "blue"
+        ),
       },
-    },
+    ],
+  };
+
+  const options = {
+    scales: { y: { beginAtZero: true } },
+    animation: { duration: 1000, easing: "easeInOutQuart" as const },
+    layout: { padding: { left: 20, right: 20 } },
   };
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
-      <h2 className="mb-4">Total Distance by Truck</h2>
+    <div className="flex flex-col items-center">
+      <div>{sum}</div>
+      <h2 className="mb-4"></h2>
       {data.length > 0 ? (
-        <Bar data={chartData} options={options} />
+        <>
+          <div className="w-3/4 h-96 flex justify-center items-center mb-8">
+          <div>Tire limit exceed</div>
+            <Bar data={chartData} options={options} />
+          </div>
+          <div className="w-3/4 h-96 flex justify-center items-center">
+          <div>Oil change limit</div>
+            <Bar data={chartData2} options={options} />
+          </div>
+        </>
       ) : (
         <p>Loading data...</p>
       )}
@@ -73,5 +88,3 @@ const Maintenance = () => {
 };
 
 export default Maintenance;
-
-// ddepdepdep
