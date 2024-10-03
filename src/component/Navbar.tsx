@@ -1,10 +1,14 @@
+import Image from "next/image";
 import React from "react";
 
 const Navbar = () => {
   return (
     <nav className="bg-white text-gray-400 w-full shadow-md">
-      <div className="container mx-auto flex justify-between items-center py-4 px-6">
-        <ul className="flex space-x-6">
+      <div className="container mx-auto flex justify-between items-center py-2 px-6">
+        <ul className="flex space-x-6 justify-center items-center">
+          <li>
+            <Image src="/fflogo.webp" alt="logo" width={40} height={40} />
+          </li>
           <li>
             <a href="/parking" className="hover:text-black">
               Parking
