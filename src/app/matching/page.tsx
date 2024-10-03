@@ -130,7 +130,7 @@ const Matching = () => {
     return (
         <div className="h-screen w-screen flex flex-col items-center justify-center bg-gray-100 p-4">
             {data.length > 0 ? (
-                <div className="bg-white shadow-md rounded-lg p-6 w-full h-full max-w-7xl overflow-auto">
+                <div className="bg-white shadow-md rounded-lg p-6 w-full h-full max-w-7xl overflow- auto">
                     <h2 className="text-xl font-semibold text-gray-800 mb-4">
                         Customer Deliveries:
                     </h2>
